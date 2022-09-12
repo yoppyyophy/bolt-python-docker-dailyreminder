@@ -1,26 +1,30 @@
 import os
-import psycopg2
-from unittest import case
 from slack_bolt import App
 app = App(
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
     token=os.environ.get("SLACK_BOT_TOKEN")
 )
 
-DATABASE_URL = os.environ['DATABASE_URL']
-
 # ここには Flask 固有の記述はありません
 # App はフレームワークやランタイムに一切依存しません
 @app.command("/check")
 def response(ack, say, command):
     ack()
-    with psycopg2.connect(DATABASE_URL, sslmode='require') as conn:
-        with conn.cursor() as cur:
-            cur.execute('SELECT message_text FROM messages WHERE message_id = (SELECT message_id FROM today_count)')
-            data = cur.fetchall()
 
-    message_text = data[0][0]
-    say(message_text)
+    # firestore用のライブラリをインポート
+    from google.cloud import firestore
+
+    # today_countからmessage_idを取得
+    db = firestore.Client(project='yoppy-chatbot')
+    ref_today = db.collection('dairyreminder').document('today_count')
+    docs_today = ref_today.get()
+    count = docs_today.to_dict()['message_id']
+
+    ref_message = db.collection('dairyreminder').document('messages')
+    docs_message = ref_message.get()
+    message = docs_message.to_dict()[f'{str(count)}']
+
+    say(message)
 
 # Flask アプリを初期化します
 from flask import Flask, request
