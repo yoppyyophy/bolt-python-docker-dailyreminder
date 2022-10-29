@@ -16,11 +16,11 @@ def response(ack, say, command):
 
     # today_countからmessage_idを取得
     db = firestore.Client(project='yoppy-chatbot')
-    ref_today = db.collection('dairyreminder').document('today_count')
+    ref_today = db.collection('dailyreminder').document('today_count')
     docs_today = ref_today.get()
     count = docs_today.to_dict()['message_id']
 
-    ref_message = db.collection('dairyreminder').document('messages')
+    ref_message = db.collection('dailyreminder').document('messages')
     docs_message = ref_message.get()
     message = docs_message.to_dict()[f'{str(count)}']
 
