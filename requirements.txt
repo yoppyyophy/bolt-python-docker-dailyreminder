@@ -4,3 +4,5 @@ Flask>=1.1
 gunicorn>=20
 psycopg2-binary
 google-cloud-firestore
+google-cloud-secret-manager
+google_crc32c
