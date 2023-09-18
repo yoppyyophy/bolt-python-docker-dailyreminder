@@ -1,12 +1,12 @@
 terraform {
   backend "gcs" {
-    bucket  = "yoppy-chatbot-terraform-backet"
+    bucket = "yoppy-chatbot-terraform-backet"
   }
 }
 
 provider "google" {
-  project     = "yoppy-chatbot"
-  region = "asia-northeast1"
+  project = "yoppy-chatbot"
+  region  = "asia-northeast1"
 }
 
 resource "google_pubsub_topic" "chatcall" {
@@ -31,10 +31,10 @@ resource "google_cloud_scheduler_job" "countup" {
 
   retry_config {
     max_backoff_duration = "3600s"
-    max_doublings = 5
-    max_retry_duration = "0s"
+    max_doublings        = 5
+    max_retry_duration   = "0s"
     min_backoff_duration = "5s"
-    retry_count = 0
+    retry_count          = 0
   }
 
   timeouts {}
@@ -54,10 +54,10 @@ resource "google_cloud_scheduler_job" "callchat-1" {
 
   retry_config {
     max_backoff_duration = "3600s"
-    max_doublings = 5
-    max_retry_duration = "0s"
+    max_doublings        = 5
+    max_retry_duration   = "0s"
     min_backoff_duration = "5s"
-    retry_count = 0
+    retry_count          = 0
   }
 
   timeouts {}
@@ -77,10 +77,10 @@ resource "google_cloud_scheduler_job" "callchat-2" {
 
   retry_config {
     max_backoff_duration = "3600s"
-    max_doublings = 5
-    max_retry_duration = "0s"
+    max_doublings        = 5
+    max_retry_duration   = "0s"
     min_backoff_duration = "5s"
-    retry_count = 0
+    retry_count          = 0
   }
 
   timeouts {}
