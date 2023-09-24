@@ -9,6 +9,48 @@ provider "google" {
   region  = "asia-northeast1"
 }
 
+resource "google_storage_bucket" "functions" {
+    name                        = "gcf-sources-877848481527-asia-northeast1"
+    location                    = "asia-northeast1"
+    uniform_bucket_level_access = true
+}
+
+data "archive_file" "chatcall" {
+  type        = "zip"
+  output_path = "./chatcall.zip"
+  source_dir  = "functions/chatcall/"
+}
+resource "google_storage_bucket_object" "chatcall" {
+  name   = "chatcall.zip"
+  bucket = google_storage_bucket.functions.name
+  source = data.archive_file.chatcall.output_path # Add path to the zipped function source code
+}
+
+resource "google_cloudfunctions2_function" "chatcall" {
+  name        = "chatcall"
+  location    = "asia-northeast1"
+
+  build_config {
+    runtime     = "python310"
+    entry_point = "callchat" # Set the entry point
+    source {
+      storage_source {
+        bucket = google_storage_bucket.functions.name
+        object = google_storage_bucket_object.chatcall.name
+      }
+    }
+  }
+
+  service_config {
+    max_instance_count = 1
+    available_memory   = "256M"
+    timeout_seconds    = 60
+    environment_variables = {
+        CHANNEL_ID = "C02GX4HH3U1"
+    }
+  }
+}
+
 resource "google_pubsub_topic" "chatcall" {
   name = "pubsub-chatcall"
 }

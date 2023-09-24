@@ -126,7 +126,7 @@ def change_to_pajama(ack, say):
 
 
 @app.action("towel")
-def change_to_pajama(ack, say):
+def change_to_towel(ack, say):
     ack()
     count = 3
     change_count(count)

@@ -1,0 +1,4 @@
+slack_sdk
+google-cloud-firestore
+google-cloud-secret-manager
+google_crc32c
